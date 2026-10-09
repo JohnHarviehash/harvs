@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IT Repair Shop - Check Booking Status</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header class="header">
+    <a href="/" class="brand">
+      <span>&#9881;</span> TechFix
+    </a>
+    <nav class="nav">
+      <a href="/" class="nav-link">Services</a>
+      <a href="/booking.html" class="nav-link">Book Now</a>
+      <a href="/status.html" class="nav-link active">Check Status</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <h1 class="page-title">Track Your Booking</h1>
+    <p class="page-subtitle">Enter your reference code (e.g., BK123456) to view your repair appointment.</p>
+
+    <div id="status-banner" class="banner"></div>
+
+    <form id="search-form" class="card" novalidate>
+      <div class="form-group">
+        <label for="reference" class="form-label">Booking Reference Number *</label>
+        <input type="text" id="reference" class="form-control" placeholder="BKXXXXXX" style="text-transform: uppercase;">
+        <div id="reference-error" class="field-error"></div>
+      </div>
+      <button type="submit" id="search-btn" class="btn btn-primary btn-full">Search Booking</button>
+    </form>
+
+    <div id="result-card" class="card" style="display: none;">
+      <!-- Search details populated dynamically -->
+    </div>
+  </main>
+
+  <script src="/js/main.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("search-form").addEventListener("submit", handleSearch);
+      
+      const urlParams = new URLSearchParams(window.location.search);
+      const refParam = urlParams.get("ref");
+      if (refParam) {
+        document.getElementById("reference").value = refParam;
+        fetchBookingDetails(refParam);
+      }
+    });
+
+    async function handleSearch(e) {
+      e.preventDefault();
+      clearFieldErrors();
+      hideBanner("status-banner");
+
+      const refInput = document.getElementById("reference").value.trim().toUpperCase();
+      if (!refInput) {
+        setFieldError("reference", "Please enter a reference code.");
+        return;
+      }
+
+      fetchBookingDetails(refInput);
+    }
+
+    async function fetchBookingDetails(reference) {
+      const searchBtn = document.getElementById("search-btn");
+      const resultCard = document.getElementById("result-card");
+      
+      setButtonLoading(searchBtn, true);
+      resultCard.style.display = "none";
+
+      try {
+        const response = await fetch(`/api/bookings/${reference}`);
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || "Booking reference not found.");
+        }
+
+        resultCard.style.display = "block";
+        resultCard.innerHTML = `
+          <h2 style="margin-bottom: var(--spacing-md);">Booking Details</h2>
+          <div class="details-list">
+            <div class="details-row">
+              <span class="details-label">Reference</span>
+              <span class="details-value">${data.reference}</span>
+            </div>
+            <div class="details-row">
+              <span class="details-label">Status</span>
+              <span class="details-value"><span class="badge badge-${data.status}">${data.status}</span></span>
+            </div>
+            <div class="details-row">
+              <span class="details-label">Service</span>
+              <span class="details-value">${data.service_name}</span>
+            </div>
+            <div class="details-row">
+              <span class="details-label">Price</span>
+              <span class="details-value">${formatPesos(data.service_price)}</span>
+            </div>
+            <div class="details-row">
+              <span class="details-label">Date</span>
+              <span class="details-value">${formatDate(data.booking_date)}</span>
+            </div>
+            <div class="details-row">
+              <span class="details-label">Time</span>
+              <span class="details-value">${formatTime(data.booking_time)}</span>
+            </div>
+            <div class="details-row">
+              <span class="details-label">Customer Name</span>
+              <span class="details-value">${data.name}</span>
+            </div>
+            <div class="details-row">
+              <span class="details-label">Notes</span>
+              <span class="details-value">${data.notes || "None"}</span>
+            </div>
+          </div>
+        `;
+      } catch (err) {
+        showBanner("status-banner", err.message, true);
+      } finally {
+        setButtonLoading(searchBtn, false, "Search Booking");
+      }
+    }
+  </script>
+</body>
+</html>

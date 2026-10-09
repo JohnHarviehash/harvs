@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Repair - School IT Dept</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header>
+    <a href="/" class="logo-container">
+      <div class="logo-icon">IT</div>
+      <div class="logo-text">
+        <h1>School IT Repair Shop</h1>
+        <span>Activity Booking System</span>
+      </div>
+    </a>
+    <nav>
+      <a href="/">Services</a>
+      <a href="/booking.html" class="active">Book Repair</a>
+      <a href="/lookup.html" class="btn btn-outline">Check Status</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="form-container">
+      <h2 style="margin-bottom: 1.5rem; text-align: center; color: var(--accent-green);">Schedule an Appointment</h2>
+      
+      <div id="alert-box" style="display: none;" class="alert"></div>
+
+      <form id="booking-form">
+        <div class="form-group">
+          <label for="service_id">Select Service *</label>
+          <select id="service_id" name="service_id" class="form-control" required>
+            <option value="">-- Choose a service --</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="name">Full Name *</label>
+          <input type="text" id="name" name="name" class="form-control" placeholder="Enter your full name" required>
+        </div>
+
+        <div class="form-group">
+          <label for="contact">Contact Number (Phone/Mobile) *</label>
+          <input type="text" id="contact" name="contact" class="form-control" placeholder="e.g. 09123456789" required>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email Address *</label>
+          <input type="email" id="email" name="email" class="form-control" placeholder="e.g. student@school.edu.ph" required>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div class="form-group">
+            <label for="booking_date">Preferred Date *</label>
+            <input type="date" id="booking_date" name="booking_date" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label for="booking_time">Preferred Time *</label>
+            <input type="time" id="booking_time" name="booking_time" class="form-control" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="guests">Number of Devices / Attendees</label>
+          <input type="number" id="guests" name="guests" class="form-control" value="1" min="1" max="10">
+        </div>
+
+        <div class="form-group">
+          <label for="notes">Additional Notes / Problem Description</label>
+          <textarea id="notes" name="notes" class="form-control" placeholder="Describe the issue with your PC or laptop..."></textarea>
+        </div>
+
+        <button type="submit" class="btn" style="width: 100%; padding: 0.9rem; font-size: 1rem; margin-top: 1rem;">Submit Booking</button>
+      </form>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 School IT Department. All rights reserved.</p>
+  </footer>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>

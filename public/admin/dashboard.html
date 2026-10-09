@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - School IT Dept</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .table-responsive {
+      overflow-x: auto;
+      margin-top: 1.5rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: var(--card-bg);
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+    }
+    th, td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 0.95rem;
+    }
+    th {
+      background-color: rgba(2, 132, 199, 0.15);
+      color: var(--text-main);
+      font-weight: 600;
+    }
+    tr:hover {
+      background-color: rgba(255, 255, 255, 0.02);
+    }
+    .action-btns {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .btn-sm {
+      padding: 0.3rem 0.6rem;
+      font-size: 0.8rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="/admin/dashboard.html" class="logo-container">
+      <div class="logo-icon">IT</div>
+      <div class="logo-text">
+        <h1>School IT Repair Shop</h1>
+        <span>Admin Dashboard</span>
+      </div>
+    </a>
+    <nav>
+      <span id="admin-welcome" style="color: var(--accent-green); font-weight: 500;"></span>
+      <button id="logout-btn" class="btn btn-outline btn-sm">Logout</button>
+    </nav>
+  </header>
+
+  <main style="max-width: 1400px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+      <h2 style="font-size: 1.75rem; color: var(--text-main);">Manage Bookings</h2>
+      <button id="refresh-btn" class="btn btn-blue btn-sm">Refresh Bookings</button>
+    </div>
+
+    <div id="alert-box" style="display: none;" class="alert"></div>
+
+    <div class="table-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>Reference</th>
+            <th>Service</th>
+            <th>Client Name</th>
+            <th>Contact / Email</th>
+            <th>Date & Time</th>
+            <th>Devices</th>
+            <th>Notes</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="bookings-tbody">
+          <tr>
+            <td colspan="9" style="text-align: center; color: var(--text-muted);">Loading bookings...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 School IT Department. All rights reserved.</p>
+  </footer>
+
+  <script src="/admin/js/admin.js"></script>
+</body>
+</html>

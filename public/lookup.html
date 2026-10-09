@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lookup Booking - School IT Dept</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header>
+    <a href="/" class="logo-container">
+      <div class="logo-icon">IT</div>
+      <div class="logo-text">
+        <h1>School IT Repair Shop</h1>
+        <span>Activity Booking System</span>
+      </div>
+    </a>
+    <nav>
+      <a href="/">Services</a>
+      <a href="/booking.html">Book Repair</a>
+      <a href="/lookup.html" class="active">Check Status</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="form-container">
+      <h2 style="margin-bottom: 1.5rem; text-align: center; color: var(--primary-blue);">Check Booking Status</h2>
+      <p style="text-align: center; color: var(--text-muted); margin-bottom: 1.5rem;">Enter your reference number (e.g. IT-XXXXXX) to view your appointment details.</p>
+
+      <div id="alert-box" style="display: none;" class="alert"></div>
+
+      <form id="lookup-form" style="display: flex; gap: 0.75rem; margin-bottom: 2rem;">
+        <input type="text" id="reference-input" name="reference" class="form-control" placeholder="Enter Reference Number (e.g. IT-A1B2C3)" required style="text-transform: uppercase;">
+        <button type="submit" class="btn btn-blue" style="white-space: nowrap;">Search</button>
+      </form>
+
+      <div id="result-container" style="display: none; background-color: var(--dark-bg); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--border-color);">
+        <h3 style="margin-bottom: 1rem; color: var(--accent-green); border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">Booking Details</h3>
+        <div id="result-content"></div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 School IT Department. All rights reserved.</p>
+  </footer>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const form = document.getElementById("lookup-form");
+      const alertBox = document.getElementById("alert-box");
+      const resultContainer = document.getElementById("result-container");
+      const resultContent = document.getElementById("result-content");
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const ref = document.getElementById("reference-input").value.trim().toUpperCase();
+        alertBox.style.display = "none";
+        resultContainer.style.display = "none";
+
+        try {
+          const res = await fetch(`/api/bookings/lookup/${ref}`);
+          const data = await res.json();
+
+          if (!res.ok) {
+            throw new Error(data.error || "Booking not found");
+          }
+
+          resultContent.innerHTML = `
+            <p style="margin-bottom: 0.75rem;"><strong>Reference Number:</strong> <span style="color: var(--accent-green); font-weight: bold;">${data.reference}</span></p>
+            <p style="margin-bottom: 0.75rem;"><strong>Service:</strong> ${data.services ? data.services.name : 'N/A'} (${data.services ? '₱' + Number(data.services.price).toLocaleString('en-PH', {minimumFractionDigits: 2}) : ''})</p>
+            <p style="margin-bottom: 0.75rem;"><strong>Client Name:</strong> ${data.name}</p>
+            <p style="margin-bottom: 0.75rem;"><strong>Contact:</strong> ${data.contact}</p>
+            <p style="margin-bottom: 0.75rem;"><strong>Email:</strong> ${data.email}</p>
+            <p style="margin-bottom: 0.75rem;"><strong>Date & Time:</strong> ${data.booking_date} at ${data.booking_time}</p>
+            <p style="margin-bottom: 0.75rem;"><strong>Devices / Attendees:</strong> ${data.guests}</p>
+            <p style="margin-bottom: 0.75rem;"><strong>Notes:</strong> ${data.notes || 'None'}</p>
+            <p style="margin-bottom: 0;"><strong>Status:</strong> <span class="badge badge-${data.status}">${data.status}</span></p>
+          `;
+          resultContainer.style.display = "block";
+        } catch (err) {
+          alertBox.textContent = err.message;
+          alertBox.className = "alert alert-error";
+          alertBox.style.display = "block";
+        }
+      });
+    });
+  </script>
+</body>
+</html>

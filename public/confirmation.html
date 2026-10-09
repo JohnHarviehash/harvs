@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Booking Confirmation - School IT Dept</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header>
+    <a href="/" class="logo-container">
+      <div class="logo-icon">IT</div>
+      <div class="logo-text">
+        <h1>School IT Repair Shop</h1>
+        <span>Activity Booking System</span>
+      </div>
+    </a>
+    <nav>
+      <a href="/">Services</a>
+      <a href="/booking.html">Book Repair</a>
+      <a href="/lookup.html" class="btn btn-outline">Check Status</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="form-container" style="text-align: center;">
+      <div style="font-size: 3rem; color: var(--accent-green); margin-bottom: 1rem;">✓</div>
+      <h2 style="margin-bottom: 0.5rem; color: var(--accent-green);">Booking Confirmed!</h2>
+      <p style="color: var(--text-muted); margin-bottom: 2rem;">Your repair appointment has been successfully submitted and is currently pending review.</p>
+
+      <div style="background-color: var(--dark-bg); border: 1px dashed var(--accent-green); padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem;">
+        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.5rem;">Your Reference Number:</p>
+        <h1 id="ref-number" style="font-size: 2rem; color: var(--text-main); letter-spacing: 2px;">--</h1>
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">Please save this reference number to check your booking status.</p>
+      </div>
+
+      <div id="booking-details" style="text-align: left; margin-bottom: 2rem; background-color: var(--dark-bg); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--border-color);">
+        <!-- Details populated via JS -->
+      </div>
+
+      <div style="display: flex; gap: 1rem; justify-content: center;">
+        <a href="/" class="btn btn-blue">Return Home</a>
+        <a href="/lookup.html" class="btn">Lookup Booking</a>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 School IT Department. All rights reserved.</p>
+  </footer>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const ref = urlParams.get("ref");
+      if (ref) {
+        document.getElementById("ref-number").textContent = ref;
+        fetch(`/api/bookings/lookup/${ref}`)
+          .then(res => res.json())
+          .then(data => {
+            if (!data.error) {
+              const detailsEl = document.getElementById("booking-details");
+              detailsEl.innerHTML = `
+                <p style="margin-bottom: 0.5rem;"><strong>Service:</strong> ${data.services ? data.services.name : 'N/A'}</p>
+                <p style="margin-bottom: 0.5rem;"><strong>Name:</strong> ${data.name}</p>
+                <p style="margin-bottom: 0.5rem;"><strong>Contact:</strong> ${data.contact}</p>
+                <p style="margin-bottom: 0.5rem;"><strong>Email:</strong> ${data.email}</p>
+                <p style="margin-bottom: 0.5rem;"><strong>Date & Time:</strong> ${data.booking_date} at ${data.booking_time}</p>
+                <p style="margin-bottom: 0.5rem;"><strong>Status:</strong> <span class="badge badge-${data.status}">${data.status}</span></p>
+              `;
+            }
+          })
+          .catch(err => console.error("Error fetching booking details:", err));
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login - School IT Dept</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header>
+    <a href="/" class="logo-container">
+      <div class="logo-icon">IT</div>
+      <div class="logo-text">
+        <h1>School IT Repair Shop</h1>
+        <span>Admin Portal</span>
+      </div>
+    </a>
+    <nav>
+      <a href="/">View Site</a>
+    </nav>
+  </header>
+
+  <main style="display: flex; align-items: center; justify-content: center; min-height: 70vh;">
+    <div class="form-container" style="width: 100%; max-width: 400px;">
+      <h2 style="margin-bottom: 1.5rem; text-align: center; color: var(--primary-blue);">Admin Login</h2>
+
+      <div id="alert-box" style="display: none;" class="alert"></div>
+
+      <form id="login-form">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" class="form-control" required autocomplete="username">
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" class="form-control" required autocomplete="current-password">
+        </div>
+
+        <button type="submit" class="btn btn-blue" style="width: 100%; padding: 0.8rem; margin-top: 1rem;">Login</button>
+      </form>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 School IT Department. All rights reserved.</p>
+  </footer>
+
+  <script>
+    document.getElementById("login-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const alertBox = document.getElementById("alert-box");
+      alertBox.style.display = "none";
+
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value;
+
+      try {
+        const res = await fetch("/api/admin/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.error || "Login failed");
+        }
+
+        window.location.href = "/admin/dashboard.html";
+      } catch (err) {
+        alertBox.textContent = err.message;
+        alertBox.className = "alert alert-error";
+        alertBox.style.display = "block";
+      }
+    });
+  </script>
+</body>
+</html>
